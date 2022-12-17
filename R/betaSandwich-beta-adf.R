@@ -1,11 +1,13 @@
 #' Estimate Standardized Regression Coefficients
-#' and Sampling Covariance Matrix Assuming Multivariate Normality
-#'
-#' @author Ivan Jacob Agaloos Pesigan
+#' and Sampling Covariance Matrix
+#' Using the Asymptotic Distribution-Free Approach
 #'
 #' @details
-#' `BetaN()` assumes multivariate normality.
+#' `BetaADF()` is appropriate when sample sizes are moderate to large
+#' (`n > 250`).
 #' `BetaHC()` is recommended in most situations.
+#'
+#' @author Ivan Jacob Agaloos Pesigan
 #'
 #' @return Returns an object of class `betaSandwich`
 #' which is a list with the following elements:
@@ -21,7 +23,7 @@
 #' @param object Object of class `lm`.
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
-#' std <- BetaN(object)
+#' std <- BetaADF(object)
 #' # Methods -------------------------------------------------------
 #' print(std)
 #' summary(std)
@@ -31,7 +33,7 @@
 #' @export
 #' @family Beta Sandwich Functions
 #' @keywords betaSandwich
-BetaN <- function(object) {
+BetaADF <- function(object) {
   input <- .ProcessLM(object)
   jcap <- .JacobianVechSigmaWRTThetaStar(
     betastar = input$betastar,
@@ -41,13 +43,36 @@ BetaN <- function(object) {
     q = input$p + 1 + 0.5 * input$p * (input$p + 1),
     p = input$p
   )
-  gammacap_mvn <- .GammaN(
-    sigmacap = input$sigmacap,
-    pinv_of_dcap = .PInvDmat(.DMat(input$k))
+  sigmacap_consistent <- (
+    input$sigmacap * (
+      input$n - 1
+    ) / input$n
   )
+  vechsigmacap_consistent <- .Vech(
+    sigmacap_consistent
+  )
+  gammacap_adf <- .GammaADFUnbiased(
+    gammacapadf_consistent = .GammaADFConsistent(
+      d = .DofMat(
+        input$x,
+        center = colMeans(input$x),
+        n = input$n,
+        k = input$k
+      ),
+      vechsigmacap_consistent = vechsigmacap_consistent,
+      n = input$n
+    ),
+    gammacapmvn_consistent = .GammaN(
+      sigmacap = sigmacap_consistent,
+      pinv_of_dcap = .PInvDmat(.DMat(input$k))
+    ),
+    vechsigmacap_consistent = vechsigmacap_consistent,
+    n = input$n
+  )
+  # the procedure from here on is the same as normal
   avcov <- .ACovN(
     jcap = jcap,
-    gammacap_mvn = gammacap_mvn
+    gammacap_mvn = gammacap_adf
   )
   vcov <- .CovN(
     acov = avcov,
@@ -56,7 +81,7 @@ BetaN <- function(object) {
   colnames(vcov) <- rownames(vcov) <- input$xnames
   out <- list(
     call = match.call(),
-    type = "mvn",
+    type = "adf",
     beta = input$betastar,
     vcov = vcov,
     n = input$n,
