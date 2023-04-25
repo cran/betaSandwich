@@ -1,4 +1,4 @@
-## ---- test-betaSandwich-beta-adf
+## ---- test-betaSandwich-beta-sandwich-mvn
 lapply(
   X = 1,
   FUN = function(i,
@@ -16,27 +16,40 @@ lapply(
     }
     df <- nas1982
     object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = df)
-    coefs <- coef(BetaADF(object))
-    adf <- .BetaCI(BetaADF(object))
+    out <- BetaN(object)
     testthat::test_that(
-      paste(text, "coefs"),
+      paste(text, "coef"),
       {
         testthat::expect_true(
           all(
             abs(
-              coefs - c(0.4951, 0.3915, 0.2632)
+              coef(out) - c(0.4951, 0.3915, 0.2632)
+            ) <= tol
+          )
+        )
+        testthat::expect_true(
+          all(
+            abs(
+              out$est - coef(out)
             ) <= tol
           )
         )
       }
     )
     testthat::test_that(
-      paste(text, "adf"),
+      paste(text, "se"),
       {
         testthat::expect_true(
           all(
             abs(
-              adf[, "se"] - c(0.0674, 0.0710, 0.0769)
+              summary(out)[, "se"] - c(0.0759, 0.0770, 0.0747)
+            ) <= tol
+          )
+        )
+        testthat::expect_true(
+          all(
+            abs(
+              sqrt(diag(vcov(out))) - summary(out)[, "se"]
             ) <= tol
           )
         )
@@ -44,6 +57,6 @@ lapply(
     )
   },
   tol = 0.0001,
-  text = "test-betaSandwich-beta-adf"
+  text = "test-betaSandwich-beta-sandwich-mvn"
 )
 # This test compares the results of the package with Dudgeon (2017)

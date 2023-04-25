@@ -3,7 +3,8 @@
 \name{BetaN}
 \alias{BetaN}
 \title{Estimate Standardized Regression Coefficients
-and Sampling Covariance Matrix Assuming Multivariate Normality}
+and the Corresponding Sampling Covariance Matrix
+Assuming Multivariate Normality}
 \usage{
 BetaN(object)
 }
@@ -11,23 +12,35 @@ BetaN(object)
 \item{object}{Object of class \code{lm}.}
 }
 \value{
-Returns an object of class \code{betaSandwich}
-which is a list with the following elements:
+Returns an object
+of class \code{betasandwich} which is a list with the following elements:
 \describe{
 \item{call}{Function call.}
-\item{type}{Standard error type.}
-\item{beta}{Vector of standardized slopes.}
-\item{vcov}{Sampling covariance matrix of the standardized slopes.}
-\item{n}{Sample size.}
-\item{p}{Number of regressors.}
-\item{df}{\eqn{n - p - 1} degrees of freedom}
+\item{args}{Function arguments.}
+\item{lm_process}{Processed \code{lm} object.}
+\item{gamma_n}{Asymptotic covariance matrix
+of the sample covariance matrix
+assuming multivariate normality.}
+\item{gamma_hc}{Asymptotic covariance matrix
+HC correction.}
+\item{gamma}{Asymptotic covariance matrix
+of the sample covariance matrix.}
+\item{acov}{Asymptotic covariance matrix
+of the standardized slopes.}
+\item{vcov}{Sampling covariance matrix
+of the standardized slopes.}
+\item{est}{Vector of standardized slopes.}
 }
 }
 \description{
 Estimate Standardized Regression Coefficients
-and Sampling Covariance Matrix Assuming Multivariate Normality
+and the Corresponding Sampling Covariance Matrix
+Assuming Multivariate Normality
 }
 \details{
+Note that while the calculation in \code{BetaN()}
+is different from \code{betaDelta::BetaDelta()} with \code{type = "mvn"},
+the results are numerically equivalent.
 \code{BetaN()} assumes multivariate normality.
 \code{BetaHC()} is recommended in most situations.
 }
@@ -41,13 +54,29 @@ coef(std)
 vcov(std)
 confint(std, level = 0.95)
 }
+\references{
+Dudgeon, P. (2017).
+Some improvements in confidence intervals
+for standardized regression coefficients.
+\emph{Psychometrika}, \emph{82}(4), 928–951.
+\doi{10.1007/s11336-017-9563-z}
+
+Pesigan, I. J. A., Sun, R. W., & Cheung, S. F. (2023).
+betaDelta and betaSandwich:
+Confidence intervals for standardized regression coefficients in R.
+\emph{Multivariate Behavioral Research}.
+\doi{10.1080/00273171.2023.2201277}
+}
 \seealso{
 Other Beta Sandwich Functions: 
 \code{\link{BetaADF}()},
-\code{\link{BetaHC}()}
+\code{\link{BetaHC}()},
+\code{\link{DiffBetaSandwich}()},
+\code{\link{RSqBetaSandwich}()}
 }
 \author{
 Ivan Jacob Agaloos Pesigan
 }
 \concept{Beta Sandwich Functions}
 \keyword{betaSandwich}
+\keyword{std}

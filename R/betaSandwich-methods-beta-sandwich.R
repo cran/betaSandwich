@@ -1,13 +1,20 @@
-#' Print Method for an Object of Class `betaSandwich`
+#' Print Method for an Object of Class `betasandwich`
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @param x Object of class `betaSandwich`.
+#' @return Returns a matrix of
+#'   standardized regression slopes,
+#'   standard errors,
+#'   test statistics,
+#'   p-values,
+#'   and
+#'   confidence intervals.
+#'
+#' @param x Object of class `betasandwich`.
 #' @param ... additional arguments.
 #' @param alpha Significance level.
 #' @param digits Digits to print.
-#' @return Returns a matrix of standardized regression slopes,
-#'   standard errors, test statistics, p-values, and confidence intervals.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
@@ -22,7 +29,7 @@ print.betasandwich <- function(x,
   base::print(x$call)
   cat(
     "\nStandardized regression slopes with",
-    toupper(x$type),
+    toupper(x$args$type),
     "standard errors:\n"
   )
   base::print(
@@ -36,16 +43,23 @@ print.betasandwich <- function(x,
   )
 }
 
-#' Summary Method for an Object of Class `betaSandwich`
+#' Summary Method for an Object of Class `betasandwich`
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @param object Object of class `betaSandwich`.
+#' @return Returns a matrix of
+#'   standardized regression slopes,
+#'   standard errors,
+#'   test statistics,
+#'   p-values,
+#'   and
+#'   confidence intervals.
+#'
+#' @param object Object of class `betasandwich`.
 #' @param ... additional arguments.
 #' @param alpha Significance level.
 #' @param digits Digits to print.
-#' @return Returns a matrix of standardized regression slopes,
-#'   standard errors, test statistics, p-values, and confidence intervals.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
@@ -60,7 +74,7 @@ summary.betasandwich <- function(object,
   base::print(object$call)
   cat(
     "\nStandardized regression slopes with",
-    toupper(object$type),
+    toupper(object$args$type),
     "standard errors:\n"
   )
   return(
@@ -74,14 +88,17 @@ summary.betasandwich <- function(object,
   )
 }
 
-#' Robust Sampling Covariance Matrix of the Standardized Regression Slopes
+#' Sampling Covariance Matrix of the Standardized Regression Slopes
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @param object Object of class `betaSandwich`.
-#' @param ... additional arguments.
-#' @return Returns a matrix of the variance-covariance matrix
+#' @return Returns a matrix of the
+#'   variance-covariance matrix
 #'   of standardized slopes.
+#'
+#' @param object Object of class `betasandwich`.
+#' @param ... additional arguments.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
@@ -90,19 +107,24 @@ summary.betasandwich <- function(object,
 #' @keywords methods
 vcov.betasandwich <- function(object,
                               ...) {
-  p <- length(object$beta)
-  out <- object$vcov[1:p, 1:p, drop = FALSE]
-  rownames(out) <- colnames(out) <- names(object$beta)
-  return(out)
+  return(
+    object$vcov[
+      seq_len(object$lm_process$p),
+      seq_len(object$lm_process$p),
+      drop = FALSE
+    ]
+  )
 }
 
 #' Standardized Regression Slopes
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @param object Object of class `betaSandwich`.
-#' @param ... additional arguments.
 #' @return Returns a vector of standardized regression slopes.
+#'
+#' @param object Object of class `betasandwich`.
+#' @param ... additional arguments.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
@@ -111,21 +133,25 @@ vcov.betasandwich <- function(object,
 #' @keywords methods
 coef.betasandwich <- function(object,
                               ...) {
-  object$beta
+  return(
+    object$est
+  )
 }
 
-#' Robust Confidence Intervals for Standardized Regression Slopes
+#' Confidence Intervals for Standardized Regression Slopes
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @param object Object of class `betaSandwich`.
+#' @return Returns a matrix of confidence intervals.
+#'
+#' @param object Object of class `betasandwich`.
 #' @param ... additional arguments.
 #' @param parm a specification of which parameters
 #'   are to be given confidence intervals,
 #'   either a vector of numbers or a vector of names.
 #'   If missing, all parameters are considered.
 #' @param level the confidence level required.
-#' @return Returns a matrix of confidence intervals.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
@@ -137,7 +163,7 @@ confint.betasandwich <- function(object,
                                  level = 0.95,
                                  ...) {
   if (is.null(parm)) {
-    parm <- 1:object$p
+    parm <- seq_len(object$lm_process$p)
   }
   return(
     .BetaCI(

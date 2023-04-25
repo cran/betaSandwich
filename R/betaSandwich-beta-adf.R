@@ -1,26 +1,59 @@
 #' Estimate Standardized Regression Coefficients
-#' and Sampling Covariance Matrix
+#' and the Corresponding Sampling Covariance Matrix
 #' Using the Asymptotic Distribution-Free Approach
 #'
 #' @details
+#' Note that while the calculation in `BetaADF()`
+#' is different from `betaDelta::BetaDelta()` with `type = "adf"`,
+#' the results are numerically equivalent.
 #' `BetaADF()` is appropriate when sample sizes are moderate to large
 #' (`n > 250`).
 #' `BetaHC()` is recommended in most situations.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @return Returns an object of class `betaSandwich`
-#' which is a list with the following elements:
-#' \describe{
-#'   \item{call}{Function call.}
-#'   \item{type}{Standard error type.}
-#'   \item{beta}{Vector of standardized slopes.}
-#'   \item{vcov}{Sampling covariance matrix of the standardized slopes.}
-#'   \item{n}{Sample size.}
-#'   \item{p}{Number of regressors.}
-#'   \item{df}{\eqn{n - p - 1} degrees of freedom}
-#' }
+#' @return Returns an object
+#'   of class `betasandwich` which is a list with the following elements:
+#'   \describe{
+#'     \item{call}{Function call.}
+#'     \item{args}{Function arguments.}
+#'     \item{lm_process}{Processed `lm` object.}
+#'     \item{gamma_n}{Asymptotic covariance matrix
+#'       of the sample covariance matrix
+#'       assuming multivariate normality.}
+#'     \item{gamma_hc}{Asymptotic covariance matrix
+#'       HC correction.}
+#'     \item{gamma}{Asymptotic covariance matrix
+#'       of the sample covariance matrix.}
+#'     \item{acov}{Asymptotic covariance matrix
+#'       of the standardized slopes.}
+#'     \item{vcov}{Sampling covariance matrix
+#'       of the standardized slopes.}
+#'     \item{est}{Vector of standardized slopes.}
+#'   }
+#'
 #' @param object Object of class `lm`.
+#'
+#' @references
+#' Browne, M. W. (1984).
+#' Asymptotically distribution-free methods
+#' for the analysis of covariance structures.
+#' *British Journal of Mathematical and Statistical Psychology*,
+#' *37*(1), 62–83.
+#' \doi{10.1111/j.2044-8317.1984.tb00789.x}
+#'
+#' Dudgeon, P. (2017).
+#' Some improvements in confidence intervals
+#' for standardized regression coefficients.
+#' *Psychometrika*, *82*(4), 928–951.
+#' \doi{10.1007/s11336-017-9563-z}
+#'
+#' Pesigan, I. J. A., Sun, R. W., & Cheung, S. F. (2023).
+#' betaDelta and betaSandwich:
+#' Confidence intervals for standardized regression coefficients in R.
+#' *Multivariate Behavioral Research*.
+#' \doi{10.1080/00273171.2023.2201277}
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaADF(object)
@@ -32,21 +65,25 @@
 #' confint(std, level = 0.95)
 #' @export
 #' @family Beta Sandwich Functions
-#' @keywords betaSandwich
+#' @keywords betaSandwich std
 BetaADF <- function(object) {
-  input <- .ProcessLM(object)
+  lm_process <- .ProcessLM(object)
   jcap <- .JacobianVechSigmaWRTThetaStar(
-    betastar = input$betastar,
-    sigmay = input$sigma[1],
-    sigmax = input$sigma[-1],
-    rhocapx = input$rhocap[2:input$k, 2:input$k, drop = FALSE],
-    q = input$p + 1 + 0.5 * input$p * (input$p + 1),
-    p = input$p
+    betastar = lm_process$betastar,
+    sigmay = lm_process$sigma[1],
+    sigmax = lm_process$sigma[-1],
+    rhocapx = lm_process$rhocap[
+      2:lm_process$k,
+      2:lm_process$k,
+      drop = FALSE
+    ],
+    q = lm_process$q,
+    p = lm_process$p
   )
   sigmacap_consistent <- (
-    input$sigmacap * (
-      input$n - 1
-    ) / input$n
+    lm_process$sigmacap * (
+      lm_process$n - 1
+    ) / lm_process$n
   )
   vechsigmacap_consistent <- .Vech(
     sigmacap_consistent
@@ -54,39 +91,53 @@ BetaADF <- function(object) {
   gammacap_adf <- .GammaADFUnbiased(
     gammacapadf_consistent = .GammaADFConsistent(
       d = .DofMat(
-        input$x,
-        center = colMeans(input$x),
-        n = input$n,
-        k = input$k
+        lm_process$x,
+        center = colMeans(lm_process$x),
+        n = lm_process$n,
+        k = lm_process$k
       ),
       vechsigmacap_consistent = vechsigmacap_consistent,
-      n = input$n
+      n = lm_process$n
     ),
     gammacapmvn_consistent = .GammaN(
       sigmacap = sigmacap_consistent,
-      pinv_of_dcap = .PInvDmat(.DMat(input$k))
+      pinv_of_dcap = .PInvDmat(.DMat(lm_process$k))
     ),
     vechsigmacap_consistent = vechsigmacap_consistent,
-    n = input$n
+    n = lm_process$n
   )
   # the procedure from here on is the same as normal
-  avcov <- .ACovN(
-    jcap = jcap,
-    gammacap_mvn = gammacap_adf
+  acov <- chol2inv(
+    chol(
+      .ACovSEMInverse(
+        jcap = jcap,
+        acov = gammacap_adf
+      )
+    )
   )
-  vcov <- .CovN(
-    acov = avcov,
-    n = input$n
-  )[1:input$p, 1:input$p, drop = FALSE]
-  colnames(vcov) <- rownames(vcov) <- input$xnames
+  vcov <- (1 / lm_process$n) * acov
+  vcov <- vcov[
+    seq_len(lm_process$p),
+    seq_len(lm_process$p),
+    drop = FALSE
+  ]
+  colnames(vcov) <- rownames(vcov) <- lm_process$xnames
   out <- list(
     call = match.call(),
-    type = "adf",
-    beta = input$betastar,
+    args = list(
+      object = object,
+      type = "mvn"
+    ),
+    lm_process = lm_process,
+    gamma_n = .GammaN(
+      sigmacap = lm_process$sigmacap,
+      pinv_of_dcap = .PInvDmat(.DMat(lm_process$k))
+    ),
+    gamma_hc = NULL,
+    gamma = gammacap_adf,
+    acov = acov,
     vcov = vcov,
-    n = input$n,
-    p = input$p,
-    df = input$df
+    est = lm_process$betastar
   )
   class(out) <- c(
     "betasandwich",
