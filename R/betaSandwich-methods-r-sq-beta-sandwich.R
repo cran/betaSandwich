@@ -7,13 +7,17 @@
 #'   (R-squared and adjusted R-squared),
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param x Object of class `rsqbetasandwich`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `x`.
 #' @param digits Digits to print.
 #'
 #' @examples
@@ -21,10 +25,11 @@
 #' std <- BetaHC(object)
 #' rsq <- RSqBetaSandwich(std)
 #' print(rsq)
-#' @export
+#'
 #' @keywords methods
+#' @export
 print.rsqbetasandwich <- function(x,
-                                  alpha = c(0.05, 0.01, 0.001),
+                                  alpha = NULL,
                                   digits = 4,
                                   ...) {
   cat("Call:\n")
@@ -54,13 +59,17 @@ print.rsqbetasandwich <- function(x,
 #'   (R-squared and adjusted R-squared),
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param object Object of class `rsqbetasandwich`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `object`.
 #' @param digits Digits to print.
 #'
 #' @examples
@@ -68,10 +77,11 @@ print.rsqbetasandwich <- function(x,
 #' std <- BetaHC(object)
 #' rsq <- RSqBetaSandwich(std)
 #' summary(rsq)
-#' @export
+#'
 #' @keywords methods
+#' @export
 summary.rsqbetasandwich <- function(object,
-                                    alpha = c(0.05, 0.01, 0.001),
+                                    alpha = NULL,
                                     digits = 4,
                                     ...) {
   cat("Call:\n")
@@ -111,8 +121,9 @@ summary.rsqbetasandwich <- function(object,
 #' std <- BetaHC(object)
 #' rsq <- RSqBetaSandwich(std)
 #' vcov(rsq)
-#' @export
+#'
 #' @keywords methods
+#' @export
 vcov.rsqbetasandwich <- function(object,
                                  ...) {
   return(
@@ -136,14 +147,15 @@ vcov.rsqbetasandwich <- function(object,
 #' std <- BetaHC(object)
 #' rsq <- RSqBetaSandwich(std)
 #' coef(rsq)
-#' @export
+#'
 #' @keywords methods
+#' @export
 coef.rsqbetasandwich <- function(object,
                                  ...) {
   return(
     c(
-      rsq = object$fit$lm_process$summary_lm$r.squared,
-      adj = object$fit$lm_process$summary_lm$adj.r.squared
+      rsq = object$fit$lm_process$rsq[1],
+      adj = object$fit$lm_process$rsq[2]
     )
   )
 }
@@ -169,8 +181,9 @@ coef.rsqbetasandwich <- function(object,
 #' std <- BetaHC(object)
 #' rsq <- RSqBetaSandwich(std)
 #' confint(rsq, level = 0.95)
-#' @export
+#'
 #' @keywords methods
+#' @export
 confint.rsqbetasandwich <- function(object,
                                     parm = NULL,
                                     level = 0.95,
@@ -178,10 +191,18 @@ confint.rsqbetasandwich <- function(object,
   if (is.null(parm)) {
     parm <- seq_len(2)
   }
+  ci <- .RSqCI(
+    object = object,
+    alpha = 1 - level[1]
+  )[parm, 6:7, drop = FALSE]
+  varnames <- colnames(ci)
+  varnames <- gsub(
+    pattern = "%",
+    replacement = " %",
+    x = varnames
+  )
+  colnames(ci) <- varnames
   return(
-    .RSqCI(
-      object = object,
-      alpha = 1 - level[1]
-    )[parm, 5:6]
+    ci
   )
 }

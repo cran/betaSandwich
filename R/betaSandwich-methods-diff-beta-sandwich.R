@@ -6,13 +6,17 @@
 #'   differences of standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param x Object of class `diffbetasandwich`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `x`.
 #' @param digits Digits to print.
 #'
 #' @examples
@@ -20,10 +24,11 @@
 #' std <- BetaHC(object)
 #' diff <- DiffBetaSandwich(std)
 #' print(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 print.diffbetasandwich <- function(x,
-                                   alpha = c(0.05, 0.01, 0.001),
+                                   alpha = NULL,
                                    digits = 4,
                                    ...) {
   cat("Call:\n")
@@ -52,13 +57,17 @@ print.diffbetasandwich <- function(x,
 #'   differences of standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param object Object of class `diffbetasandwich`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `object`.
 #' @param digits Digits to print.
 #'
 #' @examples
@@ -66,10 +75,11 @@ print.diffbetasandwich <- function(x,
 #' std <- BetaHC(object)
 #' diff <- DiffBetaSandwich(std)
 #' summary(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 summary.diffbetasandwich <- function(object,
-                                     alpha = c(0.05, 0.01, 0.001),
+                                     alpha = NULL,
                                      digits = 4,
                                      ...) {
   cat("Call:\n")
@@ -107,8 +117,9 @@ summary.diffbetasandwich <- function(object,
 #' std <- BetaHC(object)
 #' diff <- DiffBetaSandwich(std)
 #' vcov(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 vcov.diffbetasandwich <- function(object,
                                   ...) {
   return(
@@ -130,8 +141,9 @@ vcov.diffbetasandwich <- function(object,
 #' std <- BetaHC(object)
 #' diff <- DiffBetaSandwich(std)
 #' coef(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 coef.diffbetasandwich <- function(object,
                                   ...) {
   return(
@@ -159,8 +171,9 @@ coef.diffbetasandwich <- function(object,
 #' std <- BetaHC(object)
 #' diff <- DiffBetaSandwich(std)
 #' confint(diff, level = 0.95)
-#' @export
+#'
 #' @keywords methods
+#' @export
 confint.diffbetasandwich <- function(object,
                                      parm = NULL,
                                      level = 0.95,
@@ -170,10 +183,18 @@ confint.diffbetasandwich <- function(object,
       length(object$est)
     )
   }
+  ci <- .DiffBetaCI(
+    object = object,
+    alpha = 1 - level[1]
+  )[parm, 5:6, drop = FALSE] # always z
+  varnames <- colnames(ci)
+  varnames <- gsub(
+    pattern = "%",
+    replacement = " %",
+    x = varnames
+  )
+  colnames(ci) <- varnames
   return(
-    .DiffBetaCI(
-      object = object,
-      alpha = 1 - level[1]
-    )[parm, 5:6]
+    ci
   )
 }

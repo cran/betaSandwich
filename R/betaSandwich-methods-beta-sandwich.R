@@ -6,23 +6,28 @@
 #'   standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param x Object of class `betasandwich`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `x`.
 #' @param digits Digits to print.
 #'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
 #' print(std)
-#' @export
+#'
 #' @keywords methods
+#' @export
 print.betasandwich <- function(x,
-                               alpha = c(0.05, 0.01, 0.001),
+                               alpha = NULL,
                                digits = 4,
                                ...) {
   cat("Call:\n")
@@ -51,23 +56,28 @@ print.betasandwich <- function(x,
 #'   standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param object Object of class `betasandwich`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `object`.
 #' @param digits Digits to print.
 #'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
 #' summary(std)
-#' @export
+#'
 #' @keywords methods
+#' @export
 summary.betasandwich <- function(object,
-                                 alpha = c(0.05, 0.01, 0.001),
+                                 alpha = NULL,
                                  digits = 4,
                                  ...) {
   cat("Call:\n")
@@ -103,8 +113,9 @@ summary.betasandwich <- function(object,
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
 #' vcov(std)
-#' @export
+#'
 #' @keywords methods
+#' @export
 vcov.betasandwich <- function(object,
                               ...) {
   return(
@@ -129,8 +140,9 @@ vcov.betasandwich <- function(object,
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
 #' coef(std)
-#' @export
+#'
 #' @keywords methods
+#' @export
 coef.betasandwich <- function(object,
                               ...) {
   return(
@@ -156,8 +168,9 @@ coef.betasandwich <- function(object,
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaHC(object)
 #' confint(std, level = 0.95)
-#' @export
+#'
 #' @keywords methods
+#' @export
 confint.betasandwich <- function(object,
                                  parm = NULL,
                                  level = 0.95,
@@ -165,10 +178,18 @@ confint.betasandwich <- function(object,
   if (is.null(parm)) {
     parm <- seq_len(object$lm_process$p)
   }
+  ci <- .BetaCI(
+    object = object,
+    alpha = 1 - level[1]
+  )[parm, 6:7, drop = FALSE] # always t
+  varnames <- colnames(ci)
+  varnames <- gsub(
+    pattern = "%",
+    replacement = " %",
+    x = varnames
+  )
+  colnames(ci) <- varnames
   return(
-    .BetaCI(
-      object = object,
-      alpha = 1 - level[1]
-    )[parm, 5:6]
+    ci
   )
 }

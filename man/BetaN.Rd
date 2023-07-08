@@ -6,10 +6,13 @@
 and the Corresponding Sampling Covariance Matrix
 Assuming Multivariate Normality}
 \usage{
-BetaN(object)
+BetaN(object, alpha = c(0.05, 0.01, 0.001))
 }
 \arguments{
 \item{object}{Object of class \code{lm}.}
+
+\item{alpha}{Numeric vector.
+Significance level \eqn{\alpha}.}
 }
 \value{
 Returns an object
@@ -38,11 +41,11 @@ and the Corresponding Sampling Covariance Matrix
 Assuming Multivariate Normality
 }
 \details{
-Note that while the calculation in \code{BetaN()}
-is different from \code{betaDelta::BetaDelta()} with \code{type = "mvn"},
+Note that while the calculation in \code{\link[=BetaN]{BetaN()}}
+is different from \code{\link[betaDelta:BetaDelta]{betaDelta::BetaDelta()}} with \code{type = "mvn"},
 the results are numerically equivalent.
-\code{BetaN()} assumes multivariate normality.
-\code{BetaHC()} is recommended in most situations.
+\code{\link[=BetaN]{BetaN()}} assumes multivariate normality.
+\code{\link[=BetaHC]{BetaHC()}} is recommended in most situations.
 }
 \examples{
 object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
@@ -53,6 +56,7 @@ summary(std)
 coef(std)
 vcov(std)
 confint(std, level = 0.95)
+
 }
 \references{
 Dudgeon, P. (2017).

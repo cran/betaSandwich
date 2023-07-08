@@ -28,6 +28,7 @@ Confidence Intervals for Standardized Regression Slopes
 object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 std <- BetaHC(object)
 confint(std, level = 0.95)
+
 }
 \author{
 Ivan Jacob Agaloos Pesigan

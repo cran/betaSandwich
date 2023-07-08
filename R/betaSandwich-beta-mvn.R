@@ -5,11 +5,11 @@
 #' @author Ivan Jacob Agaloos Pesigan
 #'
 #' @details
-#' Note that while the calculation in `BetaN()`
-#' is different from `betaDelta::BetaDelta()` with `type = "mvn"`,
+#' Note that while the calculation in [BetaN()]
+#' is different from [betaDelta::BetaDelta()] with `type = "mvn"`,
 #' the results are numerically equivalent.
-#' `BetaN()` assumes multivariate normality.
-#' `BetaHC()` is recommended in most situations.
+#' [BetaN()] assumes multivariate normality.
+#' [BetaHC()] is recommended in most situations.
 #'
 #' @return Returns an object
 #'   of class `betasandwich` which is a list with the following elements:
@@ -32,6 +32,8 @@
 #'   }
 #'
 #' @param object Object of class `lm`.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
 #'
 #' @references
 #' Dudgeon, P. (2017).
@@ -55,10 +57,12 @@
 #' coef(std)
 #' vcov(std)
 #' confint(std, level = 0.95)
-#' @export
+#'
 #' @family Beta Sandwich Functions
 #' @keywords betaSandwich std
-BetaN <- function(object) {
+#' @export
+BetaN <- function(object,
+                  alpha = c(0.05, 0.01, 0.001)) {
   lm_process <- .ProcessLM(object)
   jcap <- .JacobianVechSigmaWRTThetaStar(
     betastar = lm_process$betastar,
@@ -95,7 +99,8 @@ BetaN <- function(object) {
     call = match.call(),
     args = list(
       object = object,
-      type = "mvn"
+      type = "mvn",
+      alpha = alpha
     ),
     lm_process = lm_process,
     gamma_n = gammacap_mvn,

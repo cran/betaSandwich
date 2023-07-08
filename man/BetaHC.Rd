@@ -6,7 +6,14 @@
 and the Corresponding Robust Sampling Covariance Matrix
 Using the Heteroskedasticity Consistent Approach}
 \usage{
-BetaHC(object, type = "hc3", g1 = 1, g2 = 1.5, k = 0.7)
+BetaHC(
+  object,
+  type = "hc3",
+  alpha = c(0.05, 0.01, 0.001),
+  g1 = 1,
+  g2 = 1.5,
+  k = 0.7
+)
 }
 \arguments{
 \item{object}{Object of class \code{lm}.}
@@ -22,14 +29,18 @@ Possible values are
 \code{"hc4m"}, and
 \code{"hc5"}.}
 
+\item{alpha}{Numeric vector.
+Significance level \eqn{\alpha}.}
+
 \item{g1}{Numeric.
-\code{g1} value for \code{type = "hc4m"} or \code{type = "hc5"}.}
+\code{g1} value for \code{type = "hc4m"}.}
 
 \item{g2}{Numeric.
 \code{g2} value for \code{type = "hc4m"}.}
 
 \item{k}{Numeric.
-Constant for \code{type = "hc5"}}
+Constant \code{k} for \code{type = "hc5"}
+\eqn{0 \leq k \leq 1}.}
 }
 \value{
 Returns an object
@@ -66,6 +77,7 @@ summary(std)
 coef(std)
 vcov(std)
 confint(std, level = 0.95)
+
 }
 \references{
 Dudgeon, P. (2017).

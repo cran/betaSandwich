@@ -3,12 +3,12 @@
 #' Using the Asymptotic Distribution-Free Approach
 #'
 #' @details
-#' Note that while the calculation in `BetaADF()`
-#' is different from `betaDelta::BetaDelta()` with `type = "adf"`,
+#' Note that while the calculation in [BetaADF()]
+#' is different from [betaDelta::BetaDelta()] with `type = "adf"`,
 #' the results are numerically equivalent.
-#' `BetaADF()` is appropriate when sample sizes are moderate to large
+#' [BetaADF()] is appropriate when sample sizes are moderate to large
 #' (`n > 250`).
-#' `BetaHC()` is recommended in most situations.
+#' [BetaHC()] is recommended in most situations.
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
@@ -33,6 +33,8 @@
 #'   }
 #'
 #' @param object Object of class `lm`.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
 #'
 #' @references
 #' Browne, M. W. (1984).
@@ -63,10 +65,12 @@
 #' coef(std)
 #' vcov(std)
 #' confint(std, level = 0.95)
-#' @export
+#'
 #' @family Beta Sandwich Functions
 #' @keywords betaSandwich std
-BetaADF <- function(object) {
+#' @export
+BetaADF <- function(object,
+                    alpha = c(0.05, 0.01, 0.001)) {
   lm_process <- .ProcessLM(object)
   jcap <- .JacobianVechSigmaWRTThetaStar(
     betastar = lm_process$betastar,
@@ -126,7 +130,8 @@ BetaADF <- function(object) {
     call = match.call(),
     args = list(
       object = object,
-      type = "mvn"
+      type = "mvn",
+      alpha = alpha
     ),
     lm_process = lm_process,
     gamma_n = .GammaN(

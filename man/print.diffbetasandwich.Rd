@@ -4,12 +4,15 @@
 \alias{print.diffbetasandwich}
 \title{Print Method for an Object of Class \code{diffbetasandwich}}
 \usage{
-\method{print}{diffbetasandwich}(x, alpha = c(0.05, 0.01, 0.001), digits = 4, ...)
+\method{print}{diffbetasandwich}(x, alpha = NULL, digits = 4, ...)
 }
 \arguments{
 \item{x}{Object of class \code{diffbetasandwich}.}
 
-\item{alpha}{Significance level.}
+\item{alpha}{Numeric vector.
+Significance level \eqn{\alpha}.
+If \code{alpha = NULL},
+use the argument \code{alpha} used in \code{x}.}
 
 \item{digits}{Digits to print.}
 
@@ -20,6 +23,7 @@ Returns a matrix of
 differences of standardized regression slopes,
 standard errors,
 test statistics,
+degrees of freedom,
 p-values,
 and
 confidence intervals.
@@ -32,6 +36,7 @@ object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 std <- BetaHC(object)
 diff <- DiffBetaSandwich(std)
 print(diff)
+
 }
 \author{
 Ivan Jacob Agaloos Pesigan

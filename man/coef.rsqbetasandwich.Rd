@@ -25,6 +25,7 @@ object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 std <- BetaHC(object)
 rsq <- RSqBetaSandwich(std)
 coef(rsq)
+
 }
 \author{
 Ivan Jacob Agaloos Pesigan

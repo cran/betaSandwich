@@ -33,6 +33,7 @@ object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 std <- BetaHC(object)
 rsq <- RSqBetaSandwich(std)
 confint(rsq, level = 0.95)
+
 }
 \author{
 Ivan Jacob Agaloos Pesigan

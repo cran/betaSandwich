@@ -5,12 +5,15 @@
 \title{Estimate Differences of Standardized Slopes
 and the Corresponding Sampling Covariance Matrix}
 \usage{
-DiffBetaSandwich(object)
+DiffBetaSandwich(object, alpha = c(0.05, 0.01, 0.001))
 }
 \arguments{
 \item{object}{Object of class \code{betasandwich},
 that is,
-the output of the \code{BetaHC()}, \code{BetaN()}, or \code{BetaADF()} functions.}
+the output of the \code{\link[=BetaHC]{BetaHC()}}, \code{\link[=BetaN]{BetaN()}}, or \code{\link[=BetaADF]{BetaADF()}} functions.}
+
+\item{alpha}{Numeric vector.
+Significance level \eqn{\alpha}.}
 }
 \value{
 Returns an object of class \code{diffbetasandwich}
@@ -18,6 +21,7 @@ which is a list with the following elements:
 \describe{
 \item{call}{Function call.}
 \item{fit}{The argument \code{object}.}
+\item{args}{Function arguments.}
 \item{vcov}{Sampling covariance matrix of
 differences of standardized slopes.}
 \item{est}{Vector of
@@ -38,6 +42,7 @@ summary(diff)
 coef(diff)
 vcov(diff)
 confint(diff, level = 0.95)
+
 }
 \seealso{
 Other Beta Sandwich Functions: 

@@ -6,10 +6,13 @@
 and the Corresponding Sampling Covariance Matrix
 Using the Asymptotic Distribution-Free Approach}
 \usage{
-BetaADF(object)
+BetaADF(object, alpha = c(0.05, 0.01, 0.001))
 }
 \arguments{
 \item{object}{Object of class \code{lm}.}
+
+\item{alpha}{Numeric vector.
+Significance level \eqn{\alpha}.}
 }
 \value{
 Returns an object
@@ -38,12 +41,12 @@ and the Corresponding Sampling Covariance Matrix
 Using the Asymptotic Distribution-Free Approach
 }
 \details{
-Note that while the calculation in \code{BetaADF()}
-is different from \code{betaDelta::BetaDelta()} with \code{type = "adf"},
+Note that while the calculation in \code{\link[=BetaADF]{BetaADF()}}
+is different from \code{\link[betaDelta:BetaDelta]{betaDelta::BetaDelta()}} with \code{type = "adf"},
 the results are numerically equivalent.
-\code{BetaADF()} is appropriate when sample sizes are moderate to large
+\code{\link[=BetaADF]{BetaADF()}} is appropriate when sample sizes are moderate to large
 (\code{n > 250}).
-\code{BetaHC()} is recommended in most situations.
+\code{\link[=BetaHC]{BetaHC()}} is recommended in most situations.
 }
 \examples{
 object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
@@ -54,6 +57,7 @@ summary(std)
 coef(std)
 vcov(std)
 confint(std, level = 0.95)
+
 }
 \references{
 Browne, M. W. (1984).

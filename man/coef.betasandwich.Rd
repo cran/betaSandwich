@@ -21,6 +21,7 @@ Standardized Regression Slopes
 object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 std <- BetaHC(object)
 coef(std)
+
 }
 \author{
 Ivan Jacob Agaloos Pesigan

@@ -8,6 +8,7 @@
 #'   \describe{
 #'     \item{call}{Function call.}
 #'     \item{fit}{The argument `object`.}
+#'     \item{args}{Function arguments.}
 #'     \item{vcov}{Sampling covariance matrix of
 #'       differences of standardized slopes.}
 #'     \item{est}{Vector of
@@ -16,7 +17,9 @@
 #'
 #' @param object Object of class `betasandwich`,
 #'   that is,
-#'   the output of the `BetaHC()`, `BetaN()`, or `BetaADF()` functions.
+#'   the output of the [BetaHC()], [BetaN()], or [BetaADF()] functions.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
 #'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
@@ -28,12 +31,14 @@
 #' coef(diff)
 #' vcov(diff)
 #' confint(diff, level = 0.95)
-#' @export
+#'
 #' @family Beta Sandwich Functions
 #' @keywords betaSandwich diff
-DiffBetaSandwich <- function(object) {
+#' @export
+DiffBetaSandwich <- function(object,
+                             alpha = c(0.05, 0.01, 0.001)) {
   stopifnot(
-    methods::is(
+    inherits(
       object,
       "betasandwich"
     )
@@ -42,7 +47,7 @@ DiffBetaSandwich <- function(object) {
     stop("Two or more regressors is required.")
   }
   est <- object$lm_process$dif_betastar
-  jcap <- .JacobianDiffBetastar(
+  jcap <- .JacobianDiffBetaStar(
     p = object$lm_process$p
   )
   vcov <- object$vcov[
@@ -58,6 +63,10 @@ DiffBetaSandwich <- function(object) {
   out <- list(
     call = match.call(),
     fit = object,
+    args = list(
+      object = object,
+      alpha = alpha
+    ),
     vcov = vcov,
     est = est
   )

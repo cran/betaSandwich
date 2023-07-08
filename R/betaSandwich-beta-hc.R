@@ -35,12 +35,15 @@
 #'   `"hc4"`,
 #'   `"hc4m"`, and
 #'   `"hc5"`.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
 #' @param g1 Numeric.
-#'   `g1` value for `type = "hc4m"` or `type = "hc5"`.
+#'   `g1` value for `type = "hc4m"`.
 #' @param g2 Numeric.
 #'   `g2` value for `type = "hc4m"`.
 #' @param k Numeric.
-#'   Constant for `type = "hc5"`
+#'   Constant `k` for `type = "hc5"`
+#'   \eqn{0 \leq k \leq 1}.
 #'
 #' @references
 #' Dudgeon, P. (2017).
@@ -64,11 +67,13 @@
 #' coef(std)
 #' vcov(std)
 #' confint(std, level = 0.95)
-#' @export
+#'
 #' @family Beta Sandwich Functions
 #' @keywords betaSandwich std
+#' @export
 BetaHC <- function(object,
                    type = "hc3",
+                   alpha = c(0.05, 0.01, 0.001),
                    g1 = 1,
                    g2 = 1.5,
                    k = 0.7) {
@@ -142,6 +147,7 @@ BetaHC <- function(object,
     args = list(
       object = object,
       type = type,
+      alpha = alpha,
       g1 = g1,
       g2 = g2,
       k = k

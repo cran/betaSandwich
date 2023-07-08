@@ -9,6 +9,7 @@
 #'   \describe{
 #'     \item{call}{Function call.}
 #'     \item{fit}{The argument `object`.}
+#'     \item{args}{Function arguments.}
 #'     \item{vcov}{Sampling covariance matrix of
 #'       multiple correlation coefficients
 #'       (R-squared and adjusted R-squared).}
@@ -18,7 +19,9 @@
 #'
 #' @param object Object of class `betasandwich`,
 #'   that is,
-#'   the output of the `BetaHC()`, `BetaN()`, or `BetaADF()` functions.
+#'   the output of the [BetaHC()], [BetaN()], or [BetaADF()] functions.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
 #'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
@@ -30,19 +33,21 @@
 #' coef(rsq)
 #' vcov(rsq)
 #' confint(rsq, level = 0.95)
-#' @export
+#'
 #' @family Beta Sandwich Functions
 #' @keywords betaSandwich rsq
-RSqBetaSandwich <- function(object) {
+#' @export
+RSqBetaSandwich <- function(object,
+                            alpha = c(0.05, 0.01, 0.001)) {
   stopifnot(
-    methods::is(
+    inherits(
       object,
       "betasandwich"
     )
   )
   est <- c(
     object$lm_process$beta,
-    object$lm_process$summary_lm$r.squared,
+    object$fit$lm_process$rsq[1],
     .Vech(
       object$lm_process$sigmacap[
         2:object$lm_process$k,
@@ -60,7 +65,7 @@ RSqBetaSandwich <- function(object) {
     ],
     q = object$lm_process$q,
     p = object$lm_process$p,
-    rsq = object$lm_process$summary_lm$r.squared
+    rsq = object$fit$lm_process$rsq[1]
   )
   if (object$args$type %in% c("mvn", "adf")) {
     acov <- chol2inv(chol(.ACovSEMInverse(
@@ -84,6 +89,10 @@ RSqBetaSandwich <- function(object) {
   out <- list(
     call = match.call(),
     fit = object,
+    args = list(
+      object = object,
+      alpha = alpha
+    ),
     vcov = vcov,
     est = est
   )

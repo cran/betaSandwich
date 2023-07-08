@@ -4,12 +4,15 @@
 \alias{print.rsqbetasandwich}
 \title{Print Method for an Object of Class \code{rsqbetasandwich}}
 \usage{
-\method{print}{rsqbetasandwich}(x, alpha = c(0.05, 0.01, 0.001), digits = 4, ...)
+\method{print}{rsqbetasandwich}(x, alpha = NULL, digits = 4, ...)
 }
 \arguments{
 \item{x}{Object of class \code{rsqbetasandwich}.}
 
-\item{alpha}{Significance level.}
+\item{alpha}{Numeric vector.
+Significance level \eqn{\alpha}.
+If \code{alpha = NULL},
+use the argument \code{alpha} used in \code{x}.}
 
 \item{digits}{Digits to print.}
 
@@ -21,6 +24,7 @@ multiple correlation coefficients
 (R-squared and adjusted R-squared),
 standard errors,
 test statistics,
+degrees of freedom,
 p-values,
 and
 confidence intervals.
@@ -33,6 +37,7 @@ object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 std <- BetaHC(object)
 rsq <- RSqBetaSandwich(std)
 print(rsq)
+
 }
 \author{
 Ivan Jacob Agaloos Pesigan

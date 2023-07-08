@@ -23,6 +23,7 @@ Sampling Covariance Matrix of the Standardized Regression Slopes
 object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 std <- BetaHC(object)
 vcov(std)
+
 }
 \author{
 Ivan Jacob Agaloos Pesigan
