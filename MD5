@@ -1,7 +1,7 @@
-a6c61d5c350a7ee8c44ffa29e2649684 *DESCRIPTION
+0870167c9de07e22c8fa6632c4c69f2e *DESCRIPTION
 0c864b2b29818a5afc91de86b712133f *LICENSE
 2c5f184049ef5888a498b5e9f75fcc21 *NAMESPACE
-1d2f374ad2b93b04d20898f8291e9539 *NEWS.md
+68b1bbbea8010c4cf688be5980924b6b *NEWS.md
 07001cab72c3f130619b2154845b07fb *R/betaSandwich-acov-hc-dot.R
 cd03cbb3857318a9afdfaf70e8f1ac42 *R/betaSandwich-acov-sem-inverse-dot.R
 5ece998959433507ef657a98b946b6e8 *R/betaSandwich-beta-adf.R
@@ -47,7 +47,7 @@ b64acb36cc8fc9ec668c601d9cef2d3f *R/strRegression-p-cor-sq-dot.R
 235408de20449af5494ef661f6727478 *R/strRegression-theta-index-dot.R
 08f1c575f61aba3ff1ceeecfa3aca203 *R/strRegression-theta-star-index-dot.R
 b9b5185ff26938d64258c79a99e52a62 *R/wald-ci-wald-dot.R
-613ece007398110e1f05f7a9e0b02bc2 *R/wald-probs-of-alpha-dot.R
+25b8a4735fb30ec697062def03e2feee *R/wald-probs-of-alpha-dot.R
 7080893e02c49cd296d4424b9be55069 *build/partial.rdb
 b7e66fce69e9127d9e23f08141e25806 *data/nas1982.rda
 eac4051488ba6f6c1b21b3cf6a082d76 *inst/CITATION
@@ -83,9 +83,3 @@ e911cfdd2ffe73a24f793cf92581c889 *tests/testthat/test-betaSandwich-beta-sandwich
 3fa5249688220f8280df5a3e6c5e885c *tests/testthat/test-betaSandwich-r-sq-beta-sandwich-methods.R
 9bf9cf2f2651ea86ed0351a904f7722b *tests/testthat/test-betaSandwich-r-sq-beta-sandwich.R
 94b24810952a14522719aac661f3d9dc *tests/testthat/test-zzz-coverage.R
-ddb196aac2bb2b2cf1aecb04a31752bb *tools/clone.sh
-66f7e74fcda834373ce5ffbfe8bc3eea *tools/make-config.R
-2aa3a676db350ddafb83d04168af1d6f *tools/make-packages.R
-c69d6c208a4914652ba2bb19915351ea *tools/make-project.R
-3b73d16f4a2237c5877c5ef90b3d81e9 *tools/project.R
-de104874a8e06de49a804aaa93699cd4 *tools/secrets.R

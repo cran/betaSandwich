@@ -1,3 +1,9 @@
+# betaSandwich 1.0.6
+
+## Patch
+
+* Minor documentation edits.
+
 # betaSandwich 1.0.5
 
 ## Patch
