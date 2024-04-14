@@ -1,7 +1,7 @@
 Package: betaSandwich
 Title: Robust Confidence Intervals for Standardized Regression
         Coefficients
-Version: 1.0.6
+Version: 1.0.7
 Authors@R: 
     person(given = "Ivan Jacob Agaloos",
            family = "Pesigan",
@@ -11,6 +11,8 @@ Authors@R:
 Description: Generates robust confidence intervals for standardized regression coefficients
     using heteroskedasticity-consistent standard errors for models fitted by lm()
     as described in Dudgeon (2017) <doi:10.1007/s11336-017-9563-z>.
+    The package can also be used to generate confidence intervals for R-squared,
+    adjusted R-squared, and differences of standardized regression coefficients.
     A description of the package and code examples
     are presented in Pesigan, Sun, and Cheung (2023) <doi:10.1080/00273171.2023.2201277>.
 URL: https://github.com/jeksterslab/betaSandwich,
@@ -21,11 +23,11 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.0)
 Suggests: knitr, rmarkdown, testthat, betaDelta
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 NeedsCompilation: no
-Packaged: 2023-10-14 21:20:57 UTC; root
+Packaged: 2024-04-14 16:43:47 UTC; root
 Author: Ivan Jacob Agaloos Pesigan [aut, cre, cph]
     (<https://orcid.org/0000-0003-4818-8420>)
 Maintainer: Ivan Jacob Agaloos Pesigan <r.jeksterslab@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-10-14 22:52:38 UTC
+Date/Publication: 2024-04-14 18:00:02 UTC

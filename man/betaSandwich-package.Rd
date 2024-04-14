@@ -2,11 +2,11 @@
 % Please edit documentation in R/betaSandwich-package.R
 \docType{package}
 \name{betaSandwich-package}
+\alias{betaSandwich}
 \alias{betaSandwich-package}
-\alias{_PACKAGE}
 \title{betaSandwich: Robust Confidence Intervals for Standardized Regression Coefficients}
 \description{
-Generates robust confidence intervals for standardized regression coefficients using heteroskedasticity-consistent standard errors for models fitted by lm() as described in Dudgeon (2017) \doi{10.1007/s11336-017-9563-z}. A description of the package and code examples are presented in Pesigan, Sun, and Cheung (2023) \doi{10.1080/00273171.2023.2201277}.
+Generates robust confidence intervals for standardized regression coefficients using heteroskedasticity-consistent standard errors for models fitted by lm() as described in Dudgeon (2017) \doi{10.1007/s11336-017-9563-z}. The package can also be used to generate confidence intervals for R-squared, adjusted R-squared, and differences of standardized regression coefficients. A description of the package and code examples are presented in Pesigan, Sun, and Cheung (2023) \doi{10.1080/00273171.2023.2201277}.
 }
 \seealso{
 Useful links:
