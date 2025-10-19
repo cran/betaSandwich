@@ -2,7 +2,7 @@
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @return Returns a matrix of
+#' @return Prints a matrix of
 #'   standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
@@ -30,19 +30,10 @@ print.betasandwich <- function(x,
                                alpha = NULL,
                                digits = 4,
                                ...) {
-  cat("Call:\n")
-  base::print(x$call)
-  cat(
-    "\nStandardized regression slopes with",
-    toupper(x$args$type),
-    "standard errors:\n"
-  )
-  base::print(
-    round(
-      .BetaCI(
-        object = x,
-        alpha = alpha
-      ),
+  print.summary.betasandwich(
+    summary.betasandwich(
+      object = x,
+      alpha = alpha,
       digits = digits
     )
   )
@@ -80,6 +71,47 @@ summary.betasandwich <- function(object,
                                  alpha = NULL,
                                  digits = 4,
                                  ...) {
+  ci <- .BetaCI(
+    object = object,
+    alpha = alpha
+  )
+  print_summary <- round(
+    x = ci,
+    digits = digits
+  )
+  attr(
+    x = ci,
+    which = "fit"
+  ) <- object
+  attr(
+    x = ci,
+    which = "print_summary"
+  ) <- print_summary
+  attr(
+    x = ci,
+    which = "alpha"
+  ) <- alpha
+  attr(
+    x = ci,
+    which = "digits"
+  ) <- digits
+  class(ci) <- "summary.betasandwich"
+  ci
+}
+
+#' @noRd
+#' @keywords internal
+#' @exportS3Method print summary.betasandwich
+print.summary.betasandwich <- function(x,
+                                       ...) {
+  print_summary <- attr(
+    x = x,
+    which = "print_summary"
+  )
+  object <- attr(
+    x = x,
+    which = "fit"
+  )
   cat("Call:\n")
   base::print(object$call)
   cat(
@@ -87,15 +119,8 @@ summary.betasandwich <- function(object,
     toupper(object$args$type),
     "standard errors:\n"
   )
-  return(
-    round(
-      .BetaCI(
-        object = object,
-        alpha = alpha
-      ),
-      digits = digits
-    )
-  )
+  print(print_summary)
+  invisible(x)
 }
 
 #' Sampling Covariance Matrix of the Standardized Regression Slopes
@@ -118,13 +143,11 @@ summary.betasandwich <- function(object,
 #' @export
 vcov.betasandwich <- function(object,
                               ...) {
-  return(
-    object$vcov[
-      seq_len(object$lm_process$p),
-      seq_len(object$lm_process$p),
-      drop = FALSE
-    ]
-  )
+  object$vcov[
+    seq_len(object$lm_process$p),
+    seq_len(object$lm_process$p),
+    drop = FALSE
+  ]
 }
 
 #' Standardized Regression Slopes
@@ -145,9 +168,7 @@ vcov.betasandwich <- function(object,
 #' @export
 coef.betasandwich <- function(object,
                               ...) {
-  return(
-    object$est
-  )
+  object$est
 }
 
 #' Confidence Intervals for Standardized Regression Slopes
@@ -189,7 +210,5 @@ confint.betasandwich <- function(object,
     x = varnames
   )
   colnames(ci) <- varnames
-  return(
-    ci
-  )
+  ci
 }

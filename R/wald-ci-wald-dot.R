@@ -67,6 +67,7 @@
       "p"
     )
   } else {
+    # nocov start
     foo <- function(probs,
                     est,
                     se) {
@@ -87,6 +88,7 @@
       "df",
       "p"
     )
+    # nocov end
   }
   if (!test) {
     ci <- lapply(
@@ -109,7 +111,5 @@
     )
   }
   colnames(out) <- varnames
-  return(
-    out
-  )
+  out
 }

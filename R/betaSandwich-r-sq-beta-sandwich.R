@@ -41,13 +41,13 @@ RSqBetaSandwich <- function(object,
                             alpha = c(0.05, 0.01, 0.001)) {
   stopifnot(
     inherits(
-      object,
-      "betasandwich"
+      x = object,
+      what = "betasandwich"
     )
   )
   est <- c(
     object$lm_process$beta,
-    object$fit$lm_process$rsq[1],
+    object$lm_process$rsq[1],
     .Vech(
       object$lm_process$sigmacap[
         2:object$lm_process$k,
@@ -65,13 +65,17 @@ RSqBetaSandwich <- function(object,
     ],
     q = object$lm_process$q,
     p = object$lm_process$p,
-    rsq = object$fit$lm_process$rsq[1]
+    rsq = object$lm_process$rsq[1]
   )
   if (object$args$type %in% c("mvn", "adf")) {
-    acov <- chol2inv(chol(.ACovSEMInverse(
-      jcap = jcap,
-      acov = object$gamma
-    )))
+    acov <- chol2inv(
+      chol(
+        .ACovSEMInverse(
+          jcap = jcap,
+          acov = object$gamma
+        )
+      )
+    )
     vcov <- (1 / object$lm_process$n) * acov
   } else {
     acov <- .ACovHC(
@@ -100,7 +104,5 @@ RSqBetaSandwich <- function(object,
     "rsqbetasandwich",
     class(out)
   )
-  return(
-    out
-  )
+  out
 }

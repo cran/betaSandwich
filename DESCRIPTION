@@ -1,7 +1,7 @@
 Package: betaSandwich
 Title: Robust Confidence Intervals for Standardized Regression
         Coefficients
-Version: 1.0.7
+Version: 1.0.8
 Authors@R: 
     person(given = "Ivan Jacob Agaloos",
            family = "Pesigan",
@@ -23,11 +23,11 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.0)
 Suggests: knitr, rmarkdown, testthat, betaDelta
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3.9000
 NeedsCompilation: no
-Packaged: 2024-04-14 16:43:47 UTC; root
-Author: Ivan Jacob Agaloos Pesigan [aut, cre, cph]
-    (<https://orcid.org/0000-0003-4818-8420>)
+Packaged: 2025-10-19 02:26:59 UTC; root
+Author: Ivan Jacob Agaloos Pesigan [aut, cre, cph] (ORCID:
+    <https://orcid.org/0000-0003-4818-8420>)
 Maintainer: Ivan Jacob Agaloos Pesigan <r.jeksterslab@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-04-14 18:00:02 UTC
+Date/Publication: 2025-10-19 17:50:02 UTC

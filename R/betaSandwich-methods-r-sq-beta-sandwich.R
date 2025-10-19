@@ -2,7 +2,7 @@
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @return Returns a matrix of
+#' @return Prints a matrix of
 #'   multiple correlation coefficients
 #'   (R-squared and adjusted R-squared),
 #'   standard errors,
@@ -32,19 +32,10 @@ print.rsqbetasandwich <- function(x,
                                   alpha = NULL,
                                   digits = 4,
                                   ...) {
-  cat("Call:\n")
-  base::print(x$call)
-  cat(
-    "\nMultiple correlation with",
-    toupper(x$fit$args$type),
-    "standard errors:\n"
-  )
-  base::print(
-    round(
-      .RSqCI(
-        object = x,
-        alpha = alpha
-      ),
+  print.summary.rsqbetasandwich(
+    summary.rsqbetasandwich(
+      object = x,
+      alpha = alpha,
       digits = digits
     )
   )
@@ -84,6 +75,47 @@ summary.rsqbetasandwich <- function(object,
                                     alpha = NULL,
                                     digits = 4,
                                     ...) {
+  ci <- .RSqCI(
+    object = object,
+    alpha = alpha
+  )
+  print_summary <- round(
+    x = ci,
+    digits = digits
+  )
+  attr(
+    x = ci,
+    which = "fit"
+  ) <- object
+  attr(
+    x = ci,
+    which = "print_summary"
+  ) <- print_summary
+  attr(
+    x = ci,
+    which = "alpha"
+  ) <- alpha
+  attr(
+    x = ci,
+    which = "digits"
+  ) <- digits
+  class(ci) <- "summary.rsqbetasandwich"
+  ci
+}
+
+#' @noRd
+#' @keywords internal
+#' @exportS3Method print summary.rsqbetasandwich
+print.summary.rsqbetasandwich <- function(x,
+                                          ...) {
+  print_summary <- attr(
+    x = x,
+    which = "print_summary"
+  )
+  object <- attr(
+    x = x,
+    which = "fit"
+  )
   cat("Call:\n")
   base::print(object$call)
   cat(
@@ -91,15 +123,8 @@ summary.rsqbetasandwich <- function(object,
     toupper(object$fit$args$type),
     "standard errors:\n"
   )
-  return(
-    round(
-      .RSqCI(
-        object = object,
-        alpha = alpha
-      ),
-      digits = digits
-    )
-  )
+  print(print_summary)
+  invisible(x)
 }
 
 #' Sampling Covariance Matrix of
@@ -126,9 +151,7 @@ summary.rsqbetasandwich <- function(object,
 #' @export
 vcov.rsqbetasandwich <- function(object,
                                  ...) {
-  return(
-    .RSqCov(object)
-  )
+  .RSqCov(object)
 }
 
 #' Multiple Correlation Coefficients
@@ -152,11 +175,9 @@ vcov.rsqbetasandwich <- function(object,
 #' @export
 coef.rsqbetasandwich <- function(object,
                                  ...) {
-  return(
-    c(
-      rsq = object$fit$lm_process$rsq[1],
-      adj = object$fit$lm_process$rsq[2]
-    )
+  c(
+    rsq = object$fit$lm_process$rsq[1],
+    adj = object$fit$lm_process$rsq[2]
   )
 }
 
@@ -202,7 +223,5 @@ confint.rsqbetasandwich <- function(object,
     x = varnames
   )
   colnames(ci) <- varnames
-  return(
-    ci
-  )
+  ci
 }

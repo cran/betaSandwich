@@ -23,26 +23,18 @@
 #' @noRd
 .RSqCI <- function(object,
                    alpha = NULL) {
-  stopifnot(
-    inherits(
-      object,
-      "rsqbetasandwich"
-    )
-  )
   if (is.null(alpha)) {
     alpha <- object$args$alpha
   }
   stopifnot(
     all(alpha > 0 & alpha < 1)
   )
-  return(
-    .CIWald(
-      est = object$fit$lm_process$rsq,
-      se = sqrt(diag(.RSqCov(object))),
-      theta = 0,
-      alpha = alpha,
-      z = FALSE,
-      df = object$fit$lm_process$df
-    )
+  .CIWald(
+    est = object$fit$lm_process$rsq,
+    se = sqrt(diag(.RSqCov(object))),
+    theta = 0,
+    alpha = alpha,
+    z = FALSE,
+    df = object$fit$lm_process$df
   )
 }
